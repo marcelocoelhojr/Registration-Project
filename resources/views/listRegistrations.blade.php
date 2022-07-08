@@ -36,23 +36,13 @@
             <form method="GET" action="/listRegistrations">
                 <div class="input-group container">
                     <input type="text" class="form-control" id="search" name="search" placeholder="Busca">
-                    <select name="categoria" class="form-select">
-                        <option selected>Profissional/Associado/Estudante</option>
-                        <option>Profissional</option>
-                        <option>Associado</option>
-                        <option>Estudante</option>
-                    </select>
-                    <select name="campos" class="form-select">
-                        <option selected>Nome/Data/CPF/Email</option>
-                        <option>Nome</option>
-                        <option>Data</option>
-                        <option>CPF</option>
-                        <option>Email</option>
-                    </select>
-                    <select name="status" class="form-select">
-                        <option selected>Pago/Pendente</option>
-                        <option>Pago</option>
-                        <option>Pendente</option>
+                    <input type="hidden" class="form-control" id="search" name="start">
+                    <input type="hidden" class="form-control" id="search1" name="end">
+                    <select name="filter" class="form-select" onclick="modifyStatus(value)">
+                        <option selected id="status" name="Pago" value="2">Pago</option>
+                        <option selected id="status" name="Pendente" value="1">Pendente</option>
+                        <option>Inscrito</option>
+                        <option value="periodo">Periodo</option>
                     </select>
                     <button type="submit" class="btn btn-secondary">Pesquisar</button>
                 </div>
@@ -92,7 +82,11 @@
                             <td>pago</td>
                             <input id="{{'status'.$data[$i]->id}}" value="pago" type="hidden">
                         @endif
-                        <td>R$ {{ $data[$i]->course_value->value }} </td>
+                        @if (isset($data[$i]->course_value->value)) {
+                            <td>R$ {{ $data[$i]->course_value->value }} </td>
+                        @else
+                            <td>R$ {{ $data[$i]->course_value[0]->value }} </td>
+                        @endif
                         <td class="hidden-print"> 
                             <form method="POST" action="delete/registration/{{$data[$i]->id}}">
                                 @method('delete')
@@ -198,7 +192,19 @@
                 importStyle: true,
             });
         }
-     
+
+        function modifyStatus(value)
+        {
+            if (value == 'periodo') {
+                document.getElementById("search").type = 'date';
+                document.getElementById("search1").type = 'date';
+            }
+            if (value == 'Inscrito') {
+                document.getElementById("search").type = 'text';
+                document.getElementById("search1").type = 'hidden';
+            }
+           console.log(value)
+        }
         
     </script>
     

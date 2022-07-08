@@ -14,7 +14,7 @@ class Registration extends Model
 
     public function course_value()
     {
-        return $this->hasOne(Courses::class,'id');
+        return $this->belongsToMany(Courses::class,'registration', 'id','course_id');
     }
 
 }

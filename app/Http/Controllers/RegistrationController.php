@@ -69,20 +69,31 @@ class RegistrationController extends Controller
 
     public function getRegistrations(Request $request)
     {
-        $filter = $request->except(['_token']);
-        if (isset($filter['campos']) || isset($filter['categoria']) || isset($filter['status']) || $filter['search']) {
-            //TODO: create filters
-            $this->applyFilters($filter);
+        $filter = $request != null ? $request->except(['_token']) : '';
+        $result = 0;
+        if (isset($filter['filter']) || isset($filter['search'])) {
+            $this->applyFilters($filter, $result);
         }
-        
-        $data = $this->model->with(['course_value'])->get();
-        $data['count'] = count($data);
-        foreach ($data as $key => &$value) {
-            if (isset($value->password)) {
-                unset($value->password);
+    
+        if (!$result) {
+            $data = $this->model->with(['course_value'])->get();
+            foreach ($data as $key => $value) {
+                if (isset($value->password)) {
+                    unset($value->password);
+                }
+            }
+        } else {
+            $data = $result;
+            foreach ($data as $key => &$value) {
+                $course = \DB::table('course')->where('name', $value->course)->get();
+                $value->course_value = $course[0];
+                if (isset($value->password)) {
+                    unset($value->password);
+                }
             }
         }
-
+    
+        $data['count'] = count($data);
         return view('listRegistrations', ['data' => $data]);
     }
 
@@ -91,7 +102,7 @@ class RegistrationController extends Controller
         try {
             $registration = $request->except(['_token']);
             $this->model->where('id', $registration['id'])->update($registration);
-            return $this->getRegistrations();
+            return $this->getRegistrations($request);
         } catch (\Exception $e) {
             $saveLog = new Logs();
             $saveLog->insert($log);
@@ -120,15 +131,21 @@ class RegistrationController extends Controller
     }
 
     //TODO: create filters
-    public function applyFilters($filters)
+    public function applyFilters($filter, &$result)
     {
-        //$query = '';
-        //     if ($filter['search']) {
-        //        $query = $filter['search'];
-        //        $query = "SELECT * FROM registration WHERE `name` LIKE '%$query%' OR `email` LIKE '%$query%' OR `telephone` LIKE '%$query%' OR `cell` LIKE '%$query%'";
-        //     }
-        //     $result = \DB::select($query);
-        //     print_r(json_encode([$result])); echo "\n\n"; exit;
+        $result = 0;
+        if (($filter['filter'] == 1 || $filter['filter'] == 2)) {
+            $status = $filter['filter'] - 1;
+            $result = \DB::select("SELECT * FROM registration WHERE `status` = $status");
+        } else if ($filter['filter'] == 'Inscrito' && !empty($filter['search'])) {
+            $search = $filter['search'];
+            $result = \DB::select("SELECT * FROM registration WHERE `name` LIKE '%$search%'");
+        } else if ($filter['filter'] == 'periodo' && !empty($filter['search']) && isset($filter['end']) && !empty($filter['search'])) {
+            $start = $filter['search'].' 00:00:00';
+            $end = $filter['end'].' 23:59:59';
+            $result = \DB::select("SELECT * FROM registration WHERE `created_at` >= '$start' AND `created_at` <= '$end'");
+        }
+
     }
 
     public function ticket()
