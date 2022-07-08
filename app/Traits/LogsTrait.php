@@ -14,8 +14,9 @@ trait LogsTrait
             'code' => $param[2],
             'file' => $param[3]
         ];
+    
         $saveLog = new Logs();
-        $saveLog->insert($log);
+        $saveLog->create($log);
     }
 
 }

@@ -9,7 +9,7 @@
     <body>
         <h1>Home</h1>
         <div class="d-grid gap-2 col-4 border border-danger  p-2 with-3d-shadow">
-            <button class="btn btn-warning" id="registrations" type="button">Incrições</button>
+            <button class="btn btn-warning" id="registrations" type="button">Inscrições</button>
             <button class="btn btn-warning" id="listRegistrations" type="button">Listar/Editar inscrições</button>
             <button class="btn btn-warning" id="newCourse" type="button">Novo Curso</button>
             <button class="btn btn-warning" id="listCourses" type="button">Lista de cursos</button>

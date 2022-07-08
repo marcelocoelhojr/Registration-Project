@@ -203,7 +203,6 @@
                 document.getElementById("search").type = 'text';
                 document.getElementById("search1").type = 'hidden';
             }
-           console.log(value)
         }
         
     </script>

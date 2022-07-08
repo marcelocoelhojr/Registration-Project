@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Courses;
-use App\Models\Logs;
 use App\Models\Registration;
+use App\Traits\LogsTrait;
+use App\Traits\Sanitize;
 
 class RegistrationController extends Controller
 {
+    use LogsTrait;
+    use Sanitize;
 
     public function __construct()
     {
@@ -33,6 +36,7 @@ class RegistrationController extends Controller
                 if ($registration['password'] == $registration['passwordConfirme']) {
                     unset($registration['passwordConfirme']);
                     $registration['password'] = md5($registration['password']);
+                    $this->removeCharacters($registration);
                     $this->model->create($registration);
                     $data = [
                         'status' => 'success',
@@ -51,14 +55,7 @@ class RegistrationController extends Controller
             }
             return view('registrations', $data);
         } catch (\Exception $e) {
-            $log = [
-                'message' =>  $e->getMessage(),
-                'line' => $e->getLine(),
-                'code' => $e->getCode(),
-                'file' => 'RegistrationController@create'
-            ];
-            $saveLog = new Logs();
-            $saveLog->insert($log);
+            $this->saveLog($e->getMessage(), $e->getLine(), $e->getCode(), 'RegistrationController@create');
             $data = [
                 'status' => 'error',
                 'message' => 'Erro inesperado, por favor contate o suporte.'
@@ -101,11 +98,11 @@ class RegistrationController extends Controller
     {
         try {
             $registration = $request->except(['_token']);
+            $this->removeCharacters($registration);
             $this->model->where('id', $registration['id'])->update($registration);
             return $this->getRegistrations($request);
         } catch (\Exception $e) {
-            $saveLog = new Logs();
-            $saveLog->insert($log);
+            $this->saveLog($e->getMessage(), $e->getLine(), $e->getCode(), 'RegistrationController@update');
             $data = [
                 'status' => 'error',
                 'message' => 'Erro inesperado, por favor contate o suporte.'
@@ -118,10 +115,9 @@ class RegistrationController extends Controller
     {
         try {
             $this->model->where('id', $id)->delete();
-            return $this->getRegistrations();
+            return redirect('listRegistrations');
         } catch (\Exception $e) {
-            $saveLog = new Logs();
-            $saveLog->insert($log);
+            $this->saveLog($e->getMessage(), $e->getLine(), $e->getCode(), 'RegistrationController@delete');
             $data = [
                 'status' => 'error',
                 'message' => 'Erro inesperado, por favor contate o suporte.'
@@ -130,7 +126,6 @@ class RegistrationController extends Controller
         }
     }
 
-    //TODO: create filters
     public function applyFilters($filter, &$result)
     {
         $result = 0;

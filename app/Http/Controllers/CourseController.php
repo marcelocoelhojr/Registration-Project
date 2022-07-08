@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Courses;
-use App\Models\Logs;
+use App\Traits\LogsTrait;
+use App\Traits\Sanitize;
 
 class CourseController extends Controller
 {
-
+    use LogsTrait;
+    use Sanitize;
+    
     public function __construct()
     {
         $this->model = new Courses();
@@ -22,6 +25,7 @@ class CourseController extends Controller
                 if (!isset($course['file'])) {
                     $course['file'] = '';
                 }
+                $this->removeCharacters($course);
                 $this->model->create($course);
                 $data = [
                     'status' => 'success',
@@ -36,14 +40,7 @@ class CourseController extends Controller
 
             return view('newCourse', $data);
         } catch (\Exception $e) {
-            $log = [
-                'message' =>  $e->getMessage(),
-                'line' => $e->getLine(),
-                'code' => $e->getCode(),
-                'file' => 'CourseController@create'
-            ];
-            $saveLog = new Logs();
-            $saveLog->insert($log);
+            $this->saveLog($e->getMessage(), $e->getLine(), $e->getCode(), 'RegistrationController@create');
             $data = [
                 'status' => 'error',
                 'message' => 'Erro inesperado, por favor contate o suporte.'
@@ -58,15 +55,8 @@ class CourseController extends Controller
             $data = \DB::table('course')->get();//query build is more performant
             $data['count'] = count($data);
             return view('listCourses', ['data' => $data]);
-        } catch (\Exception $e) {print_r('eeror');
-            $log = [
-                'message' =>  $e->getMessage(),
-                'line' => $e->getLine(),
-                'code' => $e->getCode(),
-                'file' => 'CourseController@getCourses'
-            ];
-            $saveLog = new Logs();
-            $saveLog->insert($log);
+        } catch (\Exception $e) {
+            $this->saveLog($e->getMessage(), $e->getLine(), $e->getCode(), 'RegistrationController@getCourses');
             $data = [
                 'status' => 'error',
                 'message' => 'Erro inesperado, por favor contate o suporte.'

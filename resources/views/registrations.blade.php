@@ -12,7 +12,7 @@
     </head>
     <body>
         <div class="d-grid gap-2 col-10 m-3">
-            <h1>Incrições</h1>
+            <h1>Inscrições</h1>
             <form class="row g-3" method="POST" action="/create/registration">
                 @csrf
                 <div class="col-md-6">

@@ -36,7 +36,7 @@
                 </div>
                 <div class="mb-3 col-md-3">
                     <label for="formFile" class="form-label">Arquivo</label>
-                    <input class="form-control" type="file" id="formFile" placeholder="Upload de arquivo com material">
+                    <input class="form-control" type="file" id="formFile" name="file" placeholder="Upload de arquivo com material">
                   </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Salvar</button>
