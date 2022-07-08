@@ -69,18 +69,12 @@ class RegistrationController extends Controller
 
     public function getRegistrations(Request $request)
     {
-        // $filter = $request->except(['_token']);
-        // if (isset($filter['campos']) || isset($filter['categoria']) || isset($filter['status']) || $filter['search']) {
-        //     $query = '';
-        //     if ($filter['search']) {
-        //        $query = $filter['search'];
-        //        $query = "SELECT * FROM registration WHERE `name` LIKE '%$query%' OR `email` LIKE '%$query%' OR `telephone` LIKE '%$query%' OR `cell` LIKE '%$query%'";
-        //     }
-        //     $result = \DB::select($query);
-        //     print_r(json_encode([$result])); echo "\n\n"; exit;
-        // }
+        $filter = $request->except(['_token']);
+        if (isset($filter['campos']) || isset($filter['categoria']) || isset($filter['status']) || $filter['search']) {
+            //TODO: create filters
+            $this->applyFilters($filter);
+        }
         
-        // exit;
         $data = $this->model->with(['course_value'])->get();
         $data['count'] = count($data);
         foreach ($data as $key => &$value) {
@@ -123,6 +117,18 @@ class RegistrationController extends Controller
             ];
             return view('registrations', $data);
         }
+    }
+
+    //TODO: create filters
+    public function applyFilters($filters)
+    {
+        //$query = '';
+        //     if ($filter['search']) {
+        //        $query = $filter['search'];
+        //        $query = "SELECT * FROM registration WHERE `name` LIKE '%$query%' OR `email` LIKE '%$query%' OR `telephone` LIKE '%$query%' OR `cell` LIKE '%$query%'";
+        //     }
+        //     $result = \DB::select($query);
+        //     print_r(json_encode([$result])); echo "\n\n"; exit;
     }
 
 }
