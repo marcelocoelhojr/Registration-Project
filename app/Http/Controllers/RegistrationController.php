@@ -131,4 +131,9 @@ class RegistrationController extends Controller
         //     print_r(json_encode([$result])); echo "\n\n"; exit;
     }
 
+    public function ticket()
+    {
+        //Error in pagseguro api
+    }
+
 }

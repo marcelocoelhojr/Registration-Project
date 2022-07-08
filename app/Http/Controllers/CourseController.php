@@ -55,8 +55,7 @@ class CourseController extends Controller
     public function getCourses()
     {
         try {
-            $data = \DB::table('course')->get(); //query build is more performant
-            //print_r(json_encode([$data])); echo "\n\n"; exit;
+            $data = \DB::table('course')->get();//query build is more performant
             $data['count'] = count($data);
             return view('listCourses', ['data' => $data]);
         } catch (\Exception $e) {print_r('eeror');
