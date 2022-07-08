@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Teste;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,15 +18,3 @@ use App\Http\Controllers\Teste;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::get('marcelo', [Teste::class, 'marcelo']);
-
-// Route::controller(Customer::class)->group(function () {
-//     Route::group(['prefix' => 'cliente'], function(){
-//         Route::post('/', 'create');
-//         Route::put('/{id}', 'update');
-//         Route::delete('/{id}', 'delete');
-//         Route::get('/{id}', 'getUser');
-//     });
-//     Route::get('consulta/final-placa/{numero}', 'search');
-// });

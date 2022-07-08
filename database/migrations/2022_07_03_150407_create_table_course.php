@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Register extends Migration
+class CreateTableCourse extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,15 @@ class Register extends Migration
      */
     public function up()
     {
-        Schema::create('register', function (Blueprint $table) {
+        Schema::create('course', function (Blueprint $table) {
             $table->id();
-            $table->interger('id');
-            $table->string('status');
-            $table->date('imported_t');
-            $table->jsonb('json');
+            $table->string('name');
+            $table->string('description');
+            $table->double('value');
+            $table->date('start');
+            $table->date('end');
+            $table->integer('amount');
+            $table->string('file');
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ class Register extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('register');
+        Schema::dropIfExists('course');
     }
 }
