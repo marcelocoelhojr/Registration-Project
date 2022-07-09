@@ -13,7 +13,7 @@ class PagSeguro
         $client = new Client();
         $headers = [
         'Content-Type' => 'application/json',
-        'Authorization' => '14C4F60D4D504C89A4860C4C0FAF3C73',
+        'Authorization' => 'chave removida',
         'x-api-version' => '4.0',
         'x-idempotency-key' => ''
         ];
